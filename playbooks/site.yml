@@ -1,0 +1,57 @@
+---
+- name: InfluxDB server configuration
+  hosts: influxdb
+  vars:
+    hostname: influxdb
+    domain: local.iamrobertyoung.co.uk
+    fqdn: "{{ hostname }}.{{ domain }}"
+
+  roles:
+    - role: configure-system
+      tags: [configure-system]
+
+    - role: shell
+      tags: [shell]
+      vars:
+        shell_hostname: "{{ hostname }}"
+        shell_user: noxious
+        shell_home_directory: /home/noxious
+
+    - role: shell
+      tags: [shell]
+      vars:
+        shell_hostname: "{{ hostname }}"
+        shell_user: root
+        shell_home_directory: /root
+        shell_show_pretty_info: false
+
+    - role: docker
+      tags: [docker]
+
+    - role: telegraf
+      tags: [telegraf]
+      vars:
+        telegraf_influxdb_url: "https://influxdb.{{ domain }}"
+        telegraf_influxdb_port: 8086
+        telegraf_influxdb_organisation: "0dd8df669872ba9e"
+        telegraf_influxdb_token: "{{ lookup('aws_ssm', '/home-server/influxdb-token', region='eu-west-2') }}"
+        telegraf_influxdb_bucket: "home-server"
+
+    - role: step-ca-client
+      tags: [step-ca-client]
+      vars:
+        step_ca_client_provisioner_password: "{{ lookup('aws_ssm', '/home-server/step-ca-ansible-password', region='eu-west-2') }}"
+        step_ca_client_post_renew_commands: []
+        step_ca_client_cert_not_after: "168h"  # 7 days
+
+    - role: syslog
+      tags: [syslog]
+      vars:
+        syslog_fqdn: "{{ fqdn }}"
+
+    - role: wazuh-agent
+      tags: [wazuh-agent]
+
+    # TODO: Add influxdb role
+    # - role: influxdb
+    #   tags: [influxdb]

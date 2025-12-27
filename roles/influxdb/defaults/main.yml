@@ -1,0 +1,22 @@
+---
+service_name: influxdb
+service_version: "2.7.12"
+service_port: "443"
+service_data_dir: /var/lib/influxdb
+service_config_dir: /etc/influxdb
+service_user: influxdb
+service_domain: influxdb.local.iamrobertyoung.co.uk
+service_container_name: influxdb
+
+backup_cron: "*-*-* 04:00:00"
+backup_image_name: backup-toolkit
+backup_image_tag: local
+backup_from: /data
+backup_mosquitto_host: mosquitto.local.iamrobertyoung.co.uk
+backup_mosquitto_username: "home-assistant"
+backup_mosquitto_password: "password"
+backup_bucket_name: "home-server-backup.iamrobertyoung.co.uk"
+backup_influxdb_host: influxdb
+backup_influxdb_port: 8086
+backup_influxdb_org: 0dd8df669872ba9e
+backup_influxdb_token: password

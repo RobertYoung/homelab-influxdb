@@ -1,12 +1,12 @@
 services:
   influxdb:
-    image: influxdb:{{ service_version }}
+    image: influxdb:{{ influxdb_service_version }}
     container_name: influxdb
     volumes:
       - influxdb-data:/var/lib/influxdb2
       - /etc/letsencrypt:/etc/letsencrypt
     ports:
-      - {{ service_port }}:8086
+      - {{ influxdb_service_port }}:8086
     restart: unless-stopped
     environment:
       - INFLUXD_TLS_CERT=/etc/letsencrypt/live/{{ certbot_domain }}/fullchain.pem
@@ -15,10 +15,10 @@ services:
   backup-toolkit:
     container_name: backup-toolkit
     image: backup-toolkit:local
-    command: sleep infinity 
+    command: sleep infinity
     restart: unless-stopped
     volumes:
-      - influxdb-data:{{ backup_from }}
+      - influxdb-data:{{ influxdb_backup_from }}
     env_file:
       - ./backup-toolkit.env
 

@@ -3,18 +3,18 @@
   become: true
   ansible.builtin.template:
     src: "templates/docker-compose/docker-compose.yml.j2"
-    dest: "{{ service_config_dir }}/docker-compose.yml"
-    owner: "{{ service_user }}"
-    group: "{{ service_user }}"
+    dest: "{{ influxdb_service_config_dir }}/docker-compose.yml"
+    owner: "{{ influxdb_service_user }}"
+    group: "{{ influxdb_service_user }}"
     mode: "0644"
-  notify: "Restart {{ service_name }}"
+  notify: "Restart {{ influxdb_service_name }}"
 
 - name: Create systemd service file
   become: true
   ansible.builtin.template:
-    src: "templates/{{ service_name }}/{{ service_name }}.service.j2"
-    dest: /etc/systemd/system/{{ service_name }}.service
+    src: "templates/{{ influxdb_service_name }}/{{ influxdb_service_name }}.service.j2"
+    dest: /etc/systemd/system/{{ influxdb_service_name }}.service
     owner: root
     group: root
     mode: "0644"
-  notify: "Restart {{ service_name }}"
+  notify: "Restart {{ influxdb_service_name }}"

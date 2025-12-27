@@ -1,22 +1,22 @@
 ---
-service_name: influxdb
-service_version: "2.7.12"
-service_port: "443"
-service_data_dir: /var/lib/influxdb
-service_config_dir: /etc/influxdb
-service_user: influxdb
-service_domain: influxdb.local.iamrobertyoung.co.uk
-service_container_name: influxdb
+influxdb_service_name: influxdb
+influxdb_service_version: "2.7.12"
+influxdb_service_port: "443"
+influxdb_service_data_dir: /var/lib/influxdb
+influxdb_service_config_dir: /etc/influxdb
+influxdb_service_user: influxdb
+influxdb_service_domain: influxdb.local.iamrobertyoung.co.uk
+influxdb_service_container_name: influxdb
 
-backup_cron: "*-*-* 04:00:00"
-backup_image_name: backup-toolkit
-backup_image_tag: local
-backup_from: /data
-backup_mosquitto_host: mosquitto.local.iamrobertyoung.co.uk
-backup_mosquitto_username: "home-assistant"
-backup_mosquitto_password: "password"
-backup_bucket_name: "home-server-backup.iamrobertyoung.co.uk"
-backup_influxdb_host: influxdb
-backup_influxdb_port: 8086
-backup_influxdb_org: 0dd8df669872ba9e
-backup_influxdb_token: password
+influxdb_backup_cron: "*-*-* 04:00:00"
+influxdb_backup_image_name: backup-toolkit
+influxdb_backup_image_tag: local
+influxdb_backup_from: /data
+influxdb_backup_mosquitto_host: mosquitto.local.iamrobertyoung.co.uk
+influxdb_backup_mosquitto_username: "home-assistant"
+influxdb_backup_mosquitto_password: "password"
+influxdb_backup_bucket_name: "home-server-backup.iamrobertyoung.co.uk"
+influxdb_backup_influxdb_host: influxdb
+influxdb_backup_influxdb_port: 8086
+influxdb_backup_influxdb_org: 0dd8df669872ba9e
+influxdb_backup_influxdb_token: password

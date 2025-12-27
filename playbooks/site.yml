@@ -63,8 +63,8 @@
       tags: [influxdb]
       vars:
         certbot_domain: "{{ fqdn }}"
-        backup_aws_access_key: "{{ lookup('aws_ssm', '/home-server/access-key', region='eu-west-2') }}"
-        backup_aws_secret_access_key: "{{ lookup('aws_ssm', '/home-server/secret-access-key', region='eu-west-2') }}"
-        backup_aws_region: eu-west-2
-        backup_mosquitto_password: "{{ lookup('aws_ssm', '/home-server/mosquitto-home-assistant-password', region='eu-west-2') }}"
-        backup_influxdb_token: "{{ lookup('aws_ssm', '/home-server/influxdb-admin-token', region='eu-west-2') }}"
+        influxdb_backup_aws_access_key: "{{ lookup('aws_ssm', '/home-server/access-key', region='eu-west-2') }}"
+        influxdb_backup_aws_secret_access_key: "{{ lookup('aws_ssm', '/home-server/secret-access-key', region='eu-west-2') }}"
+        influxdb_backup_aws_region: eu-west-2
+        influxdb_backup_mosquitto_password: "{{ lookup('aws_ssm', '/home-server/mosquitto-home-assistant-password', region='eu-west-2') }}"
+        influxdb_backup_influxdb_token: "{{ lookup('aws_ssm', '/home-server/influxdb-admin-token', region='eu-west-2') }}"

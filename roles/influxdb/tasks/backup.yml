@@ -4,67 +4,69 @@
     src: files/dockerfile
     dest: /tmp/Dockerfile
     mode: "0644"
-  register: dockerfile_copy
+  register: influxdb_dockerfile_copy
 
 - name: Create backup script
   become: true
   ansible.builtin.copy:
     src: "files/backup.sh"
     dest: "/tmp/backup.sh"
-    mode: "0644"
-  register: backup_script_copy
+    mode: "0755"
+  register: influxdb_backup_script_copy
 
 - name: Build Docker image
   become: true
   community.docker.docker_image:
-    name: "{{ backup_image_name }}"
-    tag: "{{ backup_image_tag }}"
+    name: "{{ influxdb_backup_image_name }}"
+    tag: "{{ influxdb_backup_image_tag }}"
     source: build
     push: false
     build:
       path: /tmp
-    force_source: "{{ dockerfile_copy.changed or backup_script_copy.changed }}"
+    force_source: "{{ influxdb_dockerfile_copy.changed or influxdb_backup_script_copy.changed }}"
     state: present
-  notify: "Restart {{ service_name }}"
+  notify: "Restart {{ influxdb_service_name }}"
 
 - name: Create backup .env file
   become: true
   ansible.builtin.template:
     src: templates/docker-compose/backup-toolkit.env.j2
-    dest: "{{ service_config_dir }}/backup-toolkit.env"
-    group: "{{ service_user }}"
-    owner: "{{ service_user }}"
+    dest: "{{ influxdb_service_config_dir }}/backup-toolkit.env"
+    group: "{{ influxdb_service_user }}"
+    owner: "{{ influxdb_service_user }}"
     mode: "0400"
-  notify: "Restart {{ service_name }}"
+  notify: "Restart {{ influxdb_service_name }}"
 
-- name: Create {{ service_name }} backup systemd service file
+- name: Create backup systemd service file
   become: true
   ansible.builtin.template:
     src: "templates/backup/backup.service.j2"
-    dest: /etc/systemd/system/{{ service_name }}-backup.service
+    dest: /etc/systemd/system/{{ influxdb_service_name }}-backup.service
     owner: root
-  register: backup
+    group: root
+    mode: "0644"
+  register: influxdb_backup_service
 
-- name: Create {{ service_name }} backup systemd timer file
+- name: Create backup systemd timer file
   become: true
   ansible.builtin.template:
     src: "templates/backup/backup.timer.j2"
-    dest: /etc/systemd/system/{{ service_name }}-backup.timer
+    dest: /etc/systemd/system/{{ influxdb_service_name }}-backup.timer
     owner: root
-  vars:
-    service: "{{ service_name }}"
-    cron: "*-*-* 04:00:00"
-  register: backup
+    group: root
+    mode: "0644"
+  register: influxdb_backup_timer
 
-- name: "Reload systemd"
+- name: Reload systemd
   become: true
-  changed_when: true
   ansible.builtin.systemd:
     daemon_reload: true
-  when: backup.changed or backup.changed
-  register: systemd_reload
+  when: influxdb_backup_service.changed or influxdb_backup_timer.changed
 
-- name: Start {{ service_name }}-backup timer
+- name: Enable and start backup timer
   become: true
-  command: "systemctl enable --now {{ service_name }}-backup.timer"
-  when: systemd_reload.changed
+  ansible.builtin.systemd:
+    name: "{{ influxdb_service_name }}-backup.timer"
+    enabled: true
+    state: started
+  when: influxdb_backup_service.changed or influxdb_backup_timer.changed

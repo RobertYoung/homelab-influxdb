@@ -1,10 +1,10 @@
 [Unit]
-Description=Manages docker compose service for {{ service_name}}
+Description=Manages docker compose service for {{ influxdb_service_name }}
 Requires=docker.service
 After=docker.service
 
 [Service]
-WorkingDirectory={{ service_config_dir }}
+WorkingDirectory={{ influxdb_service_config_dir }}
 ExecStart=/usr/bin/docker compose up
 ExecStop=/usr/bin/docker compose down
 TimeoutStartSec=0

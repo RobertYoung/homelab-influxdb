@@ -1,8 +1,8 @@
 [Unit]
-Description=Run {{ service_name }} backup periodically
+Description=Run {{ influxdb_service_name }} backup periodically
 
 [Timer]
-OnCalendar={{ backup_cron }}
+OnCalendar={{ influxdb_backup_cron }}
 
 [Install]
 WantedBy=timers.target

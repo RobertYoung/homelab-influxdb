@@ -1,0 +1,27 @@
+---
+- name: "Restart {{ service_name }}"
+  become: true
+  changed_when: true
+  ansible.builtin.systemd:
+    name: "{{ service_name }}"
+    state: stopped
+  notify: Reload systemd
+
+- name: "Reload systemd"
+  become: true
+  changed_when: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+  notify: "Start {{ service_name }}"
+
+- name: "Start {{ service_name }}"
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ service_name }}"
+    enabled: true
+    state: started
+
+# - name: "Restart telegraf"
+#   become: true
+#   ignore_errors: True
+#   shell: "systemctl stop telegraf; systemctl daemon-reload; systemctl enable --now telegraf"

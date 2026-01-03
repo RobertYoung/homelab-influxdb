@@ -28,6 +28,12 @@
     - role: docker
       tags: [docker]
 
+    - role: step-ca-client
+      tags: [step-ca-client]
+      vars:
+        step_ca_client_provisioner_password: "{{ lookup('aws_ssm', '/home-server/step-ca-ansible-password', region='eu-west-2') }}"
+        step_ca_client_cert_not_after: "168h" # 7 days
+
     - role: telegraf
       tags: [telegraf]
       vars:
@@ -36,12 +42,6 @@
         telegraf_influxdb_organisation: "0dd8df669872ba9e"
         telegraf_influxdb_token: "{{ lookup('aws_ssm', '/home-server/influxdb-token', region='eu-west-2') }}"
         telegraf_influxdb_bucket: "home-server"
-
-    - role: step-ca-client
-      tags: [step-ca-client]
-      vars:
-        step_ca_client_provisioner_password: "{{ lookup('aws_ssm', '/home-server/step-ca-ansible-password', region='eu-west-2') }}"
-        step_ca_client_cert_not_after: "168h" # 7 days
 
     - role: syslog
       tags: [syslog]

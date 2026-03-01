@@ -8,14 +8,14 @@
   tags:
     - always
 
-# - name: Setup nginx
-#   ansible.builtin.include_tasks:
-#     file: nginx.yml
-#     apply:
-#       tags:
-#         - nginx
-#   tags:
-#     - always
+- name: Setup traefik
+  ansible.builtin.include_tasks:
+    file: traefik.yml
+    apply:
+      tags:
+        - traefik
+  tags:
+    - always
 
 - name: Setup influxdb
   ansible.builtin.include_tasks:

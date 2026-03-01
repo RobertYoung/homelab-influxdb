@@ -19,14 +19,13 @@ trap 'echo "Backup command failed. Cleaning up..."; rm -f "$TAR_FILE" zi* "$BACK
 if [ "$(influx config ls --json)" = "{}" ]; then
   influx config create \
     --config-name influxdb \
-    --host-url https://$INFLUXDB_HOST:$INFLUXDB_PORT \
+    --host-url http://$INFLUXDB_HOST:$INFLUXDB_PORT \
     --org $INFLUXDB_ORG \
     --token $INFLUXDB_TOKEN \
     --active
 fi
 
 influx backup \
-  --skip-verify \
   $BACKUP_DIR
 
 cd $BACKUP_DIR

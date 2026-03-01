@@ -33,6 +33,11 @@
       vars:
         step_ca_client_provisioner_password: "{{ lookup('aws_ssm', '/home-server/step-ca-ansible-password', region='eu-west-2') }}"
         step_ca_client_cert_not_after: "168h" # 7 days
+        step_ca_client_post_renew_commands:
+          - "mkdir -p /etc/influxdb/certs"
+          - "cp /etc/ssl/certs/{{ fqdn }}.crt /etc/influxdb/certs/"
+          - "cp /etc/ssl/private/{{ fqdn }}.pem /etc/influxdb/certs/"
+          - "docker kill --signal=HUP traefik || echo 'Traefik not running, skipping HUP signal'"
 
     - role: telegraf
       tags: [telegraf]
@@ -51,18 +56,9 @@
     - role: wazuh-agent
       tags: [wazuh-agent]
 
-    - role: certbot
-      tags: [certbot]
-      vars:
-        certbot_domain: "{{ fqdn }}"
-        certbot_aws_access_key: "{{ lookup('aws_ssm', '/home-server/certbot-access-key', region='eu-west-2') }}"
-        certbot_aws_secret_access_key: "{{ lookup('aws_ssm', '/home-server/certbot-secret-access-key', region='eu-west-2') }}"
-        certbot_deploy_hook_script: "../roles/influxdb/files/certbot/deploy-hook.sh"
-
     - role: influxdb
       tags: [influxdb]
       vars:
-        certbot_domain: "{{ fqdn }}"
         influxdb_backup_aws_access_key: "{{ lookup('aws_ssm', '/home-server/access-key', region='eu-west-2') }}"
         influxdb_backup_aws_secret_access_key: "{{ lookup('aws_ssm', '/home-server/secret-access-key', region='eu-west-2') }}"
         influxdb_backup_aws_region: eu-west-2

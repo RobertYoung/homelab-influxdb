@@ -20,3 +20,5 @@ influxdb_backup_influxdb_host: influxdb
 influxdb_backup_influxdb_port: 8086
 influxdb_backup_influxdb_org: 0dd8df669872ba9e
 influxdb_backup_influxdb_token: password
+
+influxdb_traefik_config_dir: /etc/traefik

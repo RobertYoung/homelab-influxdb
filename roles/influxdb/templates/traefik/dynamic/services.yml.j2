@@ -1,0 +1,14 @@
+http:
+  routers:
+    influxdb:
+      rule: "Host(`{{ influxdb_service_domain }}`)"
+      entrypoints:
+        - websecure
+      service: influxdb
+      tls: {}
+
+  services:
+    influxdb:
+      loadBalancer:
+        servers:
+          - url: "http://influxdb:8086"

@@ -26,6 +26,35 @@
     owner: "{{ influxdb_service_user }}"
     group: "{{ influxdb_service_user }}"
 
+- name: Create certs directory - {{ influxdb_service_config_dir }}/certs
+  become: true
+  ansible.builtin.file:
+    path: "{{ influxdb_service_config_dir }}/certs"
+    state: directory
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Copy TLS certificate into certs directory
+  become: true
+  ansible.builtin.copy:
+    src: "/etc/ssl/certs/{{ influxdb_service_domain }}.crt"
+    dest: "{{ influxdb_service_config_dir }}/certs/{{ influxdb_service_domain }}.crt"
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy TLS key into certs directory
+  become: true
+  ansible.builtin.copy:
+    src: "/etc/ssl/private/{{ influxdb_service_domain }}.pem"
+    dest: "{{ influxdb_service_config_dir }}/certs/{{ influxdb_service_domain }}.pem"
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0600"
+
 - name: Add users to docker group
   become: true
   ansible.builtin.user:

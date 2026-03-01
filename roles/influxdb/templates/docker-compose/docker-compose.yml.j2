@@ -1,16 +1,21 @@
 services:
+  traefik:
+    image: traefik:v3.6
+    container_name: traefik
+    ports:
+      - "{{ influxdb_service_port }}:443"
+    volumes:
+      - {{ influxdb_traefik_config_dir }}/traefik.yml:/etc/traefik/traefik.yml:ro
+      - {{ influxdb_traefik_config_dir }}/dynamic:/etc/traefik/dynamic:ro
+      - {{ influxdb_service_config_dir }}/certs:/certs:ro
+    restart: unless-stopped
+
   influxdb:
     image: influxdb:{{ influxdb_service_version }}
     container_name: influxdb
     volumes:
       - influxdb-data:/var/lib/influxdb2
-      - /etc/letsencrypt:/etc/letsencrypt
-    ports:
-      - {{ influxdb_service_port }}:8086
     restart: unless-stopped
-    environment:
-      - INFLUXD_TLS_CERT=/etc/letsencrypt/live/{{ certbot_domain }}/fullchain.pem
-      - INFLUXD_TLS_KEY=/etc/letsencrypt/live/{{ certbot_domain }}/privkey.pem
 
   backup-toolkit:
     container_name: backup-toolkit

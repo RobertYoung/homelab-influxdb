@@ -26,7 +26,7 @@
     owner: "{{ influxdb_service_user }}"
     group: "{{ influxdb_service_user }}"
 
-- name: Create certs directory - {{ influxdb_service_config_dir }}/certs
+- name: Create certs directory
   become: true
   ansible.builtin.file:
     path: "{{ influxdb_service_config_dir }}/certs"
